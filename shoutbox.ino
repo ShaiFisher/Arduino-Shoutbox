@@ -1,11 +1,15 @@
 // Include Libraries
 #include "Arduino.h"
 #include "LDR.h"
+#include "LED.h"
+#include "Switchable.h"
+#include "Button.h"
 
 
 // Pin Definitions
 #define LDR_PIN_SIG	A3
 #define LED_PIN  3
+#define PUSHBUTTON_PIN  4
 #define RECORD_PIN  11
 #define PLAY_PIN  13
 
@@ -13,17 +17,14 @@
 
 // Global variables and defines
 #define THRESHOLD_ldr   100
-int ldrAverageLight;
+#define DURATION 5000
+//int ldrAverageLight;
+int wasDark = 0;
 // object initialization
 LDR ldr(LDR_PIN_SIG);
+LED led(LED_PIN);
+Button pushButton(PUSHBUTTON_PIN);
 
-
-
-// define vars for testing menu
-const int timeout = 10000;       //define timeout of 10 sec
-char menuOption = 0;
-long time0;
-int wasDark = 0;
 
 // Setup the essentials for your circuit to work. It runs first every time your circuit is powered with electricity.
 void setup() 
@@ -34,40 +35,63 @@ void setup()
     while (!Serial) ; // wait for serial port to connect. Needed for native USB
     Serial.println("start");
     
-    ldrAverageLight = ldr.readAverage();
+    //ldrAverageLight = ldr.readAverage();
     pinMode(LED_PIN, OUTPUT);
+	  pinMode(RECORD_PIN, OUTPUT);
+	  pinMode(PLAY_PIN, OUTPUT);
+    pushButton.init();
     wasDark = 0;
 }
 
 // Main logic of your circuit. It defines the interaction between the components you selected. After setup, it runs over and over again, in an eternal loop.
 void loop() 
 {
+	// check button
+	if (pushButton.onPress()) {
+        Serial.println("call record");
+        record();
+    }
+	// read ldr
     int ldrSample = ldr.read();
     Serial.print(F("Light Sample: "));
     Serial.println(ldrSample);
-    //int ldrDiff = abs(ldrAverageLight - ldrSample);
-    //Serial.print(F("Light Diff: ")); Serial.println(ldrDiff);
+	
     if (ldrSample > 180) {
       // light
       if (wasDark) {
         Serial.println("light");
-        digitalWrite(LED_PIN, HIGH);
-        digitalWrite(PLAY_PIN, HIGH);
-        delay(100);
-        digitalWrite(PLAY_PIN, LOW);
-        delay(5000);
-        digitalWrite(LED_PIN, LOW);
+		// light led
+        led.on();
+		play();
+        led.off();
+		// wait until box is closed
         wasDark = 0;
       }
     } else {
       // dark
       Serial.println("dark");
-      digitalWrite(LED_PIN, LOW);
-      digitalWrite(PLAY_PIN, LOW);
+      //digitalWrite(LED_PIN, LOW);
+      //digitalWrite(PLAY_PIN, LOW);
       wasDark = 1;
       delay(1000);
     }
     
+}
+
+void record() {
+	digitalWrite(RECORD_PIN, HIGH);
+	delay(DURATION);
+	digitalWrite(RECORD_PIN, LOW);
+}
+
+void play() {
+	// play
+	digitalWrite(PLAY_PIN, HIGH);
+	// shut play pin (but continue play)
+	delay(100);
+	digitalWrite(PLAY_PIN, LOW);
+	// wait until play is over
+	delay(DURATION);
 }
 
 /*******************************************************
