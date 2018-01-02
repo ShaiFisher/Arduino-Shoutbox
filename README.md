@@ -7,8 +7,9 @@ There is a button outside of the box.
 After pushing the button, open the box and shout something. then close the box.
 From now on, when opening the box, the message will be played.
 
-Main components: ISD1820 voice recorder and player; LDR (Light Dependent Resistor)
+Main components: ISD1820 voice recorder and player
 https://www.elabpeers.com/isd1820-voice-recording-module.html
+LDR (Light Dependent Resistor)
 
 Partial wiring (Fritzing):
 https://www.circuito.io/static/reply/index.html?solutionId=5a3d4c6bfb33e200225be712&solutionPath=storage.circuito.io
