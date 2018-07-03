@@ -15,5 +15,5 @@ Partial wiring (Fritzing):
 https://www.circuito.io/static/reply/index.html?solutionId=5a3d4c6bfb33e200225be712&solutionPath=storage.circuito.io
 
 Wiring with Attiny85:
-(fake component instead of the ISD1820)
+(fake component instead of the ISD1820, and the real batteries are AA)
 ![Fritzing for Attiny85](https://github.com/ShaiFisher/Arduino-Shoutbox/raw/master/shoutbox-attiny85_bb.jpg)
