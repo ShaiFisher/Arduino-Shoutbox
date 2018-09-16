@@ -14,9 +14,9 @@
 #define PLAY_PIN  4        // to ISD1820 
 
 // Global variables and defines
-#define THRESHOLD_ldr   100
 #define MAX_DURATION 5000
 #define LIGHT_LIMIT 250
+#define CYCLE_DURATION 100
 
 int duration;
 int wasDark;
@@ -43,10 +43,9 @@ void setup()
     pushButton.init();
     wasDark = 0;
 
-    flash(LED_PIN, 3, 5);
+    flash(LED_PIN, 3, 3);
 }
 
-// Main logic of your circuit. It defines the interaction between the components you selected. After setup, it runs over and over again, in an eternal loop.
 void loop() 
 {
 	// check button
@@ -74,7 +73,7 @@ void loop()
       wasDark = 1;
       //delay(1000);
     }
-    delay(500);
+    delay(CYCLE_DURATION);
     
 }
 
@@ -93,7 +92,7 @@ void waitUntillOpened() {
   //log("waitUntillOpened: start");
   while (isDark()) {
     //log("waitUntillOpened: wait");
-    delay(500);
+    delay(CYCLE_DURATION);
   }
   //log("waitUntillOpened: end");
 }
@@ -106,8 +105,8 @@ int waitUntillClosed(bool isRecording) {
     if (isRecording) {
       duration += flash(LED_PIN, 1, 5);
     } else {
-      delay(500);
-      duration += 500;
+      delay(CYCLE_DURATION);
+      duration += CYCLE_DURATION;
     }
   }
   //log('waitUntillClosed: end');
@@ -133,14 +132,14 @@ void play() {
 }
 
 int flash(int pin, int times, int delay1) {
-  delay1 *= 100;
+  delay1 *= 50;
   for(int i=0; i<times; i++) {
     digitalWrite(pin, HIGH);
     delay(delay1);
     digitalWrite(pin, LOW);
     delay(delay1);
   }
-  return times * 2 * delay1 * 100;
+  return times * 2 * delay1 * 50;
 }
 
 void log(String str) {
